@@ -29,6 +29,7 @@ __status__ = "Production"
 
 import re
 import os
+import sys
 import gzip
 import time
 import argparse
@@ -42,8 +43,10 @@ from collections import defaultdict
 # Config
 ########################################################
 
-default_log_file = r'/var/log/postfix/mail.log'
-default_log_dir = r'/var/log/postfix/'  # Must end with slash '/'
+# default_log_file = r'/var/log/postfix/mail.log'
+default_log_file = r'C:\Users\altinu\Desktop\pfstats\logs\mail.log'
+# default_log_dir = r'/var/log/postfix/'  # Must end with slash '/'
+default_log_dir = r'C:\Users\altinu\Desktop\pfstats\logss/'  # Must end with slash '/'
 
 ########################################################
 # Predefined variables
@@ -256,7 +259,7 @@ def process_line(sender_line, status_lines, status_type, file):
 
             generated_results[status_type] += 1
 
-            generated_file.write(
+            file.write(
                 line_date + args.output_delimiter + 
                 sender + args.output_delimiter + 
                 receiver + args.output_delimiter + 
@@ -273,7 +276,7 @@ def write_file_header(file):
 
     global args
 
-    generated_file.write(
+    file.write(
         "date" + args.output_delimiter + 
         "sender" + args.output_delimiter + 
         "receiver" + args.output_delimiter + 
@@ -306,15 +309,10 @@ def get_files_in_log_dir(default_log_dir):
     Returns a list of files from provided directory path.
     """
 
-    if not os.path.exists(default_log_dir):
-        print("Default log dir does not exist in this system!\nMaybe provide a different log dir with --log-dir")
-        exit()
-
     all_log_files = [f for f in os.listdir(default_log_dir) if os.path.isfile(os.path.join(default_log_dir, f))]
 
     if not all_log_files:
-        print("Default log dir does not have any files in it!")
-        exit()
+        sys.exit("Default log directory has no files in it!")
 
     return all_log_files
 
@@ -505,7 +503,7 @@ Add subject message in logs, and then you can use this option to query\nthose em
         parser.error('Generated output file(s) directory does not exist: ' + args.output_directory)
 
     if os.path.exists(args.log_dir) is not True:
-        parser.error('Log directory does not exist: ' + args.log_dir)
+        parser.error('This log directory does not exist in this system: ' + args.log_dir + '\nMaybe provide a different log dir with --log-dir')
 
     # If date provided, change date filter to the provided one
     if args.date != date_filter:
@@ -523,8 +521,7 @@ Add subject message in logs, and then you can use this option to query\nthose em
 
     # Check if provided date is valid
     if int(date_filter_formated(date_filter).strftime('%Y%m%d')) > int(datetime.datetime.now().strftime('%Y%m%d')):
-        print("Provided date format is wrong or higher than today's date!")
-        exit()
+        sys.exit("Provided date format is wrong or higher than today's date!")
 
     # In case the date filter is provided, and it is different from today,
     # it means that we will have to generate a temp log which contains
@@ -539,8 +536,7 @@ Add subject message in logs, and then you can use this option to query\nthose em
 
     # If there were no senders/filter matches, exit
     if not sender_lines:
-        print("No matching lines found to be processed with provided filters in log file (" + log_file + "). Exiting...")
-        exit()
+        sys.exit("No matching lines found to be processed with provided filters in log file (" + log_file + "). Exiting...")
 
 
     # Start parsing
