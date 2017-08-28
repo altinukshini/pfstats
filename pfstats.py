@@ -137,7 +137,7 @@ def get_message_id(line):
     Filter line and get the email/message id.
     """
 
-    return line.split(' ')[5].replace(":","")
+    return line.split()[5].replace(":","")
 
 
 def get_line_date(line):
@@ -146,7 +146,7 @@ def get_line_date(line):
     Filter line and get the email date (beginning of the line).
     """
 
-    return line.split(' ')[0] + " "  + str(line.split(' ')[1])
+    return line.split()[0] + " "  + str(line.split()[1])
 
 
 def check_sender_line(line):
@@ -246,12 +246,12 @@ def process_line(sender_line, status_lines, status_type, file):
 
     message_id = get_message_id(sender_line)
     sender = get_sender(sender_line)
-    receiver = get_receiver(sender_line)
     subject = get_email_subject(sender_line)
 
     for status_line in status_lines:
 
         if message_id in status_line:
+            receiver = get_receiver(status_line)
             host_message = get_host_message(status_line, status_type)
             line_date = get_line_date(status_line)
 
