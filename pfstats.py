@@ -20,7 +20,7 @@ Todo:
 __author__ = "Altin Ukshini"
 __copyright__ = "Copyright (c) 2017, Altin Ukshini"
 
-__license__ = "GPL v3.0"
+__license__ = "MIT License"
 __version__ = "1.0"
 __maintainer__ = "Altin Ukshini"
 __email__ = "altin.ukshini@gmail.com"
